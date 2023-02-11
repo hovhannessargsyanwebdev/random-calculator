@@ -2,7 +2,7 @@
 <div>
   <v-text-field
     class="input-text"
-    label="Գրեք պատասխանը"          
+    label="Գրիր պատասխանը"          
     single-line 
     v-model="inputVal"
     type="number"

@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isShowStatisticModal" class="select-operations d-flex flex-column justify-space-around flex-sm-row justify-sm-center align-sm-center">
     <div class="mathematic-operation d-flex flex-column align-sm-center">
-      <h3 class="title-select-btns" :class="changeBtnsTitleTextColor.operations">Ընտրեք կոճակներից մեկը</h3>
+      <h3 class="title-select-btns" :class="changeBtnsTitleTextColor.operations">Ընտրիր կոճակներից մեկը</h3>
       <div class="select-btn-group d-flex flex-sm-wrap flex-sm-column flex-md-nowrap flex-md-row align-center justify-md-space-between">
         <v-btn
           id="plus"                
@@ -51,7 +51,7 @@
     </div>
 
     <div class="mathematic-operation d-flex flex-column align-sm-center">
-      <h3 class="title-select-btns" :class="changeBtnsTitleTextColor.numbers" >Ընտրեք կոճակներից մեկը</h3>
+      <h3 class="title-select-btns" :class="changeBtnsTitleTextColor.numbers" >Ընտրիր կոճակներից մեկը</h3>
       <div class="select-btn-group d-flex flex-sm-wrap flex-sm-column flex-md-nowrap flex-md-row align-center justify-md-space-between">
         <v-btn
           id="1"

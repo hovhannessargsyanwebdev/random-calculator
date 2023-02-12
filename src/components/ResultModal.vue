@@ -1,6 +1,6 @@
 <template>
     <div v-if="isShowResultModal" @click="close" class="modal-backdrop d-flex justify-center">
-      <div class="modal" :class="changeResultModalStyles"  >      <!--   -->
+      <div class="modal" :class="changeResultModalStyles">
         <section class="modal-body" >
           <div class="modal-body-item"> {{ resultMsgText }} <span class="result-number"> {{ resultMsgNumber }}</span></div>  
         </section>

@@ -169,7 +169,7 @@ export default {
     isResultTrue: '',  // change color result modal
     isAlertMsgOperation: false,
     isAlertMsgNumber: false,
-    alertMsg: 'Ընտրեք տարբերակներից մեկը',   
+    alertMsg: 'Ընտրիր տարբերակներից մեկը',   
   }),
     
     // close modal window with esc
@@ -360,7 +360,7 @@ export default {
 
       // if empty answer 
       else if (this.currentInputValue === '') {
-        this.resultMsgText = `Գրեք պատասխան`
+        this.resultMsgText = `Գրիր պատասխան`
         this.resultMsgNumber = ''
         this.isResultTrue = ''
       }

@@ -7,14 +7,13 @@
         :class="changeTitleStyle"
       >
         <h1 class="title-text">
-          Սովորիր Հաշվել
+          Learn to Count
         </h1>
       </div>
       <v-container
         :class="changeContainerHeight"
         class="container d-flex flex-column"
       >
-        <!-- select component -->
         <SelectOperations
           @selectOperation="selectOperation"
           :isShowStatisticModal="isShowStatisticModal"
@@ -25,16 +24,15 @@
           :class="changeSelectBtnsStyles"
         />
 
-        <!-- start btn -->
         <div class="btn-start-wrapp d-flex justify-center align-end align-sm-center" v-if="isShowStartBtn">
           <v-btn
             @click="start"
-            class="btn-start d-flex justify-center"     
+            class="btn-start d-flex justify-center"    
             large          
           >
-            Սկսել            
+            Start
           </v-btn>
-        </div>  
+        </div> 
 
         <transition name="component-fade" mode="out-in"> 
           <RandomNumbers
@@ -43,7 +41,7 @@
             :firstRandomNumber="firstRandomNumber"
             :secondRandomNumber="secondRandomNumber"
             :matemamitcSymbol="matemamitcSymbol"
-          >    
+          >  
             <InputValue 
               v-model="inputValue"
               @checkResult="checkResult"
@@ -51,7 +49,6 @@
           </RandomNumbers>  
         </transition>
 
-        <!-- modal windows -->
         <transition name="component-fade" mode="out-in"> 
           <ResultModal
             :isShowResultModal="isShowResultModal"
@@ -59,14 +56,14 @@
             :isResultTrue="isResultTrue"
             :resultMsgNumber="resultMsgNumber"
             :resultMsgText="resultMsgText"
-            :result="result"                     
+            :result="result"                  
             :inputValue="inputValue"  
             @showCorrectResult="showCorrectResult"
             @closeResultModal="closeResultModal"
             @matematicOperation="matematicOperation"
           >  
           </ResultModal>
-        </transition>        
+        </transition>         
 
         <transition name="component-fade" mode="out-in"> 
           <StatisticModal
@@ -78,12 +75,12 @@
             :countWrongAnswer="countWrongAnswer"
             :correctAnswer="correctAnswer"
             :wrongAnswer="wrongAnswer"
-            @closeResultModal="closeResultModal"
-          >             
+            :final-duration="finalTestDuration" 
+            :elapsedSeconds="elapsedSeconds" @closeResultModal="closeResultModal"
+          >     
           </StatisticModal>
         </transition> 
 
-        <!-- btns footer -->
         <div v-if="!isShowStatisticModal"
           class="btn-group d-flex"
           :isActiveTitle="isActiveTitle"
@@ -95,7 +92,7 @@
             class="btn-group-item"
             @click="matematicOperation"
           >
-            Փոխել <br> թվերը
+            Change <br> numbers
           </v-btn>
 
           <v-btn          
@@ -104,7 +101,7 @@
             class="btn-group-item"
             @click="checkResult"
           >
-            Ստուգել
+            Check
           </v-btn>
 
           <v-btn
@@ -113,7 +110,7 @@
             class="btn-group-item"
             @click="showFinishResults"
           >
-            Ավարտել
+            Finish
           </v-btn>
         </div> 
       </v-container>  
@@ -135,7 +132,7 @@ export default {
     RandomNumbers,
     InputValue,
     ResultModal,
-    StatisticModal    
+    StatisticModal       
   },
   data: () => ({
     operationId: '',
@@ -157,29 +154,34 @@ export default {
     countWrongAnswer: 0,
     correctAnswer: [],
     wrongAnswer: [],
-    currentMatemOperation: {},    
+    currentMatemOperation: {},     
     isActiveTitle: true,
     isShowStartBtn: true,
     isShowCorrectResultBtn: false,  
     isShowResultModal: false,
     isResultShow: false,
-    toggleStatisticModal: false,  
+    toggleStatisticModal: false,   
     isShowStatisticModal: false,
-    isShowRandomNumbers: false,   
+    isShowRandomNumbers: false,  
     isResultTrue: '',  // change color result modal
     isAlertMsgOperation: false,
     isAlertMsgNumber: false,
-    alertMsg: 'Ընտրիր տարբերակներից մեկը',   
+    alertMsg: 'Ընտրիր տարբերակներից մեկը', 
+
+    finalTestDuration: 0,
+    testStartTime: null, 
+    timerInterval: null,
+    elapsedSeconds: 0,
   }),
     
-    // close modal window with esc
-    mounted() { 
-      document.addEventListener("keydown", (e) => {
-        if (e.keyCode == 27) {
-          this.closeResultModal()
-        }
-      })
-    },
+  // close modal window with esc
+  mounted() { 
+    document.addEventListener("keydown", (e) => {
+      if (e.keyCode == 27) {
+        this.closeResultModal()
+      }
+    })
+  },
 
   computed: {
     changeTitleStyle() {
@@ -202,14 +204,25 @@ export default {
     },
 
     changeContainerHeight() {
-      return {       
+      return {      
         'container-height': this.isActiveTitle == true,  
-        'container-show-statistic': this.toggleStatisticModal == true,                
+        'container-show-statistic': this.toggleStatisticModal == true,            
       }
     },
   },
 
   methods: {
+    startTimer() {
+      this.testStartTime = new Date();
+      this.timerInterval = setInterval(() => {
+        this.elapsedSeconds = Math.floor((new Date() - this.testStartTime) / 1000);
+      }, 1000);
+    },
+
+    stopTimer() {
+      clearInterval(this.timerInterval);
+    },
+
     start() {
       if (this.countSelectOperation <= 1) {
         if (this.numberId == 0 || this.operationId == '') {
@@ -219,16 +232,16 @@ export default {
       }
 
       this.countSelectOperation = 0
-      this.isShowRandomNumbers = true   
+      this.isShowRandomNumbers = true  
       this.isActiveTitle = false
       this.isShowStartBtn = false
       this.matematicOperation()  
-      this.$refs.statisticModal.timer()      
+      this.startTimer()       
     },
 
-    OpenResultModal() {     
+    OpenResultModal() {    
       if (this.countResultBtnShow >= 2) {
-        if (this.result != this.currentInputValue && this.currentInputValue !== '') {            
+        if (this.result != this.currentInputValue && this.currentInputValue !== '') {          
           this.isShowCorrectResultBtn = true
         }
         
@@ -257,13 +270,14 @@ export default {
       }
 
       // if finish 
-      if (this.toggleStatisticModal) {  
+      if (this.toggleStatisticModal) {   
         this.resetAll()  
       }  
     },
 
     showCorrectResult() {
-      this.resultMsgText = `Ճիշտ պատասխան`
+      // this.resultMsgText = `Ճիշտ պատասխան`
+      this.resultMsgText = `Correct answer`
       this.resultMsgNumber = `${this.result}`  
       this.isShowCorrectResultBtn = false  
       this.isResultShow = true
@@ -310,7 +324,7 @@ export default {
         if (this.currentNumberId != this.numberId || this.currentOperationid != this.operationId) {
           if (this.countSelectOperation > 0 || this.isShowRandomNumbers == true) {
             this.start() 
-          }                            
+          }           
         }
       }
       this.currentNumberId = this.numberId;
@@ -338,11 +352,12 @@ export default {
       }
             
       // if correct answer
-      if (this.currentInputValue != '' && this.currentInputValue == this.result) {        
+      if (this.currentInputValue != '' && this.currentInputValue == this.result) {      
         if (this.countResultBtnShow == 0) {
           this.resultMsgNumber = `${this.result}`;
-          this.resultMsgText = `Ճիշտ է`;
-          this.isResultTrue = 'true'     
+          // this.resultMsgText = `Ճիշտ է`;
+          this.resultMsgText = `That's right`;
+          this.isResultTrue = 'true'    
           this.countCorrectAnswer++
           this.correctAnswer.push(this.currentMatemOperation) 
           this.countCallFuncMatematicOperation++ 
@@ -350,31 +365,34 @@ export default {
 
         else if (this.countResultBtnShow >= 1) {
           this.resultMsgNumber = `${this.result}`;
-          this.resultMsgText = `ճիշտ է, մեկ և ավել սխալի դեպքում պատասխանը համարվում է սխալ`;
+          // this.resultMsgText = `ճիշտ է, մեկ և ավել սխալի դեպքում պատասխանը համարվում է սխալ`;
+          this.resultMsgText = `Correct, the answer is considered wrong if there is one or more mistakes`;
           this.isResultTrue = 'not-correct' 
-          this.isShowCorrectResultBtn = false                  
+          this.isShowCorrectResultBtn = false          
         }
-         
+          
         this.matematicOperation()      
       }
 
       // if empty answer 
       else if (this.currentInputValue === '') {
-        this.resultMsgText = `Գրիր պատասխան`
+        // this.resultMsgText = `Գրիր պատասխան`
+        this.resultMsgText = `Write the answer`
         this.resultMsgNumber = ''
         this.isResultTrue = ''
       }
 
       // if wrong answer
-      else if (this.currentInputValue != this.result) {        
+      else if (this.currentInputValue != this.result) {      
         this.resultMsgNumber = `${this.currentInputValue}`;    
-        this.resultMsgText = `Սխալ է`;    
+        // this.resultMsgText = `Սխալ է`;    
+        this.resultMsgText = `Incorrect`;    
         this.isResultTrue = 'false' 
         if (this.countResultBtnShow == 0) {
           this.countCallFuncMatematicOperation++ 
           this.wrongAnswer.push(this.currentMatemOperation)
           this.countWrongAnswer++  
-        }  
+        }   
         this.countResultBtnShow++
       }    
 
@@ -408,7 +426,7 @@ export default {
 
       if (this.numberId == 0 || this.operationId == '') {
         this.countSelectOperation++
-        this.checkAvailability();        
+        this.checkAvailability();         
         return
       } 
       
@@ -437,7 +455,7 @@ export default {
       else if (this.operationId == 'minus') {
         if (this.firstRandomNumber < this.secondRandomNumber) {
           this.matematicOperation() 
-          return           
+          return        
         }
         else {
           this.result = this.firstRandomNumber - this.secondRandomNumber
@@ -449,13 +467,13 @@ export default {
       else if (this.operationId == 'separate') {
           // only even numbers
         if (this.firstRandomNumber < this.secondRandomNumber || 
-            (this.firstRandomNumber % this.secondRandomNumber !== 0)) {
-           this.matematicOperation()           
+          (this.firstRandomNumber % this.secondRandomNumber !== 0)) {
+           this.matematicOperation()        
         }
         else {
-          this.result = this.firstRandomNumber / this.secondRandomNumber          
+          this.result = this.firstRandomNumber / this.secondRandomNumber       
         }
-      }     
+      }    
       this.countResultBtnShow = 0 
     }, 
 
@@ -466,7 +484,7 @@ export default {
 
       if (this.numberId == 0 || this.operationId == '') {
         this.countSelectOperation++
-        this.checkAvailability();        
+        this.checkAvailability();         
         return
       }
       
@@ -475,8 +493,9 @@ export default {
       this.toggleStatisticModal = true
       this.isShowRandomNumbers = false
       this.isShowResultModal = false
-
-      this.$refs.statisticModal.timer()       
+      
+      this.stopTimer()  
+      this.finalTestDuration = this.elapsedSeconds;     
       this.OpenResultModal()
     },
 
@@ -502,25 +521,24 @@ export default {
       this.inputValue = ''
       this.currentInputValue = ''
       this.resultMsgNumber = ''
-      this.resultMsgText = ''           
+      this.resultMsgText = ''          
       this.countCorrectAnswer = 0
       this.countWrongAnswer = 0
       this.correctAnswer = []
       this.wrongAnswer = []
 
-      this.$refs.statisticModal.startTimer.hours = 0
-      this.$refs.statisticModal.startTimer.minutes = 0
-      this.$refs.statisticModal.startTimer.seconds = 0
-      this.$refs.statisticModal.finishTimer.hours = 0
-      this.$refs.statisticModal.finishTimer.minutes = 0
-      this.$refs.statisticModal.finishTimer.seconds = 0
-      this.$refs.statisticModal.hours = 0
-      this.$refs.statisticModal.minutes = 0
-      this.$refs.statisticModal.seconds = 0
+      this.testStartTime = null
+      this.timerInterval = null
+      this.elapsedSeconds = 0
+      this.finalTestDuration = 0
+
+      // this.$refs.statisticModal.startTimer.hours = 0
+      // this.$refs.statisticModal.startTimer.minutes = 0
     }
   },
 };
 </script>
+
 <style>
 
 /* CHANGE DEFAULT STYLES */

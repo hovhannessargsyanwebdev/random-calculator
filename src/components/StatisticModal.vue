@@ -1,154 +1,109 @@
 <template>
-<div
-  v-if="isShowStatisticModal"
-  class="statistic-wrapp d-flex flex-column justify-space-between flex-md-wrap justify-md-space-around"
->
-
-  <div class="statistic-header d-flex flex-column justify-center align-center">
-    <div class="statistic-title d-flex align-center">
-      <h3 class="d-inline-block">Հարցերի Քանակ</h3>
-      <span class="statistic-title-number">{{ countCallFuncMatematicOperation }}</span>
-    </div>    
-
-    <div class="statistic-title d-flex align-center">
-      <h3 class="d-inline-block">Ժամանակ</h3>
-      <span class="statistic-title-number">
-      {{ `${hours} : ${minutes} : ${seconds}` }}
-      </span>
-    </div>
-  </div>
-
-  <div class="statistic-body d-flex flex-column flex-md-row">
-    <div class="statistic-body-item">
-      <p class="statistic-body-text correct-title">ճիշտ պատասխան
-        <span class="correct-title-number d-block">{{ countCorrectAnswer }}</span>
-      </p>
-      <div class="statistic-item-list scroll-color-succsess">
-        <ul>
-          <li v-for="(answer,idx) in correctAnswer" :key="idx">
-            {{ answer.firstRandomNumber }} {{ answer.matemamitcSymbol }} {{ answer.secondRandomNumber }} = {{ answer.currentInputValue }}
-          </li>
-        </ul>
+  <div
+    v-if="isShowStatisticModal"
+    class="statistic-wrapp d-flex flex-column justify-space-between flex-md-wrap justify-md-space-around"
+  >
+    <div class="statistic-header d-flex flex-column justify-center align-center">
+      <div class="statistic-title d-flex align-center">
+        <h3 class="d-inline-block">Number of Questions</h3>
+        <span class="statistic-title-number">{{ countCallFuncMatematicOperation }}</span>
+      </div>    
+  
+      <div class="statistic-title d-flex align-center">
+        <h3 class="d-inline-block">Duration</h3>
+        <span class="statistic-title-number">
+        {{ formattedTime }} </span>
       </div>
     </div>
-
-    <div class="statistic-body-item">
-      <p class="statistic-body-text wrong-title">Սխալ պատասխան
-        <span class="correct-title-number d-block">{{ countWrongAnswer }}</span>
-      </p>
-      <div class="statistic-item-list scroll-color-error">
-        <ul>
-          <li v-for="(answer,idx) in wrongAnswer" :key="idx">
-            {{ answer.firstRandomNumber }} {{ answer.matemamitcSymbol }} {{ answer.secondRandomNumber }} = {{ answer.currentInputValue }}
-          </li>
-        </ul>
+  
+    <div class="statistic-body d-flex flex-column flex-md-row">
+      <div class="statistic-body-item">
+        <p class="statistic-body-text correct-title">
+          Correct answer
+          <span class="correct-title-number d-block">{{ countCorrectAnswer }}</span>
+        </p>
+        <div class="statistic-item-list scroll-color-succsess">
+          <ul>
+            <li v-for="(answer,idx) in correctAnswer" :key="idx">
+              {{ answer.firstRandomNumber }} {{ answer.matemamitcSymbol }} {{ answer.secondRandomNumber }} = {{ answer.currentInputValue }}
+            </li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="statistic-body-item">
+        <p class="statistic-body-text wrong-title">
+          Incorrect answer
+          <span class="correct-title-number d-block">{{ countWrongAnswer }}</span>
+        </p>
+        <div class="statistic-item-list scroll-color-error">
+          <ul>
+            <li v-for="(answer,idx) in wrongAnswer" :key="idx">
+              {{ answer.firstRandomNumber }} {{ answer.matemamitcSymbol }} {{ answer.secondRandomNumber }} = {{ answer.currentInputValue }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
+  
+    <div class="close-statistic-modal-wrapp d-flex justify-center">
+      <v-btn
+          x-large
+          class="close-statistic-modal primary"
+          @click="$emit('closeResultModal')"
+        >
+          Close
+      </v-btn>
+    </div>
   </div>
-
-  <div class="close-statistic-modal-wrapp d-flex justify-center">
-    <v-btn
-        x-large
-        class="close-statistic-modal primary"
-        @click="$emit('closeResultModal')"
-      >
-        Փակել
-    </v-btn>
-  </div>
-</div>
-</template>
-
-<script>
-export default {
-  name: 'StatisticModal',
-  props: {
-    isActiveTitle: Boolean,
-    isShowStatisticModal: Boolean,
-    countCallFuncMatematicOperation: Number,
-    countCorrectAnswer: Number,
-    countWrongAnswer: Number,
-    correctAnswer: Array,
-    wrongAnswer: Array,
-    currentInputValue: String,
-    firstRandomNumber: String
-  },
-  data: () => ({
-    startTimer: {
-      hours: 0,
-      minutes: 0,
-      seconds: 0
+  </template>
+  
+  <script>
+  export default {
+    name: 'StatisticModal',
+    props: {
+      isShowStatisticModal: Boolean,
+      countCallFuncMatematicOperation: Number,
+      countCorrectAnswer: Number,
+      countWrongAnswer: Number,
+      correctAnswer: Array,
+      wrongAnswer: Array,
+      finalDuration: {
+        type: Number,
+        default: 0
+      },
+      elapsedSeconds: Number, 
     },
-    finishTimer: {
-      hours: 0,
-      minutes: 0,
-      seconds: 0
+    
+    data: () => ({}),
+  
+    computed: {
+      formattedTime() {
+        if (this.finalDuration === undefined || this.finalDuration === null) {
+          return '00 : 00 : 00';
+        }
+  
+        const totalSeconds = this.finalDuration; 
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        
+        const formattedHours = String(hours).padStart(2, '0');
+        const formattedMinutes = String(minutes).padStart(2, '0');  
+        const formattedSeconds = String(seconds).padStart(2, '0');
+
+        return `${formattedHours} : ${formattedMinutes} : ${formattedSeconds}`;
+      }
     },
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    currentMinute: 0,
-    currentSeconds: 0,
-  }),
-
-  methods: {
-    close() {
-      this.$emit('closeResultModal')
+  
+    methods: {
+      // timer()
+      close() {
+        this.$emit('closeResultModal')
+      },
     },
-
-    timer() {     
-      if (this.isActiveTitle == true) {
-        let dateStart = new Date();
-        this.startTimer.hours = dateStart.getHours();
-        this.startTimer.minutes = dateStart.getMinutes();
-        this.startTimer.seconds = dateStart.getSeconds();        
-      }
-
-      if (this.isActiveTitle == false) {
-        let dateFinish = new Date();
-        this.finishTimer.hours = dateFinish.getHours();
-        this.finishTimer.minutes = dateFinish.getMinutes();
-        this.finishTimer.seconds = dateFinish.getSeconds();
-      }
-
-      // seconds
-      this.currentSeconds = Math.abs(this.finishTimer.seconds - this.startTimer.seconds)
-      if (this.startTimer.seconds <= this.finishTimer.seconds) {
-        this.seconds = this.currentSeconds
-      }
-      if (this.startTimer.seconds > this.finishTimer.seconds) {
-        this.seconds = 60 - this.startTimer.seconds + this.finishTimer.seconds
-      }
-
-      // minutes
-      this.currentMinute = Math.abs(this.startTimer.minutes - this.finishTimer.minutes)      
-      if (this.startTimer.seconds < this.finishTimer.seconds) {
-        this.minutes = this.currentMinute  
-      }
-      else if (this.startTimer.seconds > this.finishTimer.seconds) {
-        this.minutes = this.currentMinute - 1
-      }       
-
-      // hours
-      if (this.startTimer.hours < this.finishTimer.hours) {
-        this.minutes = this.finishTimer.minutes - this.startTimer.minutes
-        this.hours += 1
-      } 
-
-      if (this.isActiveTitle == false) {
-        if (this.hours < 10) {
-          this.hours = `0${this.hours}`
-        }
-        if (this.minutes < 10) {
-          this.minutes = `0${this.minutes}`
-        }
-        if (this.seconds < 10 ) {
-          this.seconds = `0${this.seconds}`
-        }
-      }
-    }
   }
-}
-</script>
+  </script>
 
 <style scoped>
 .statistic-wrapp {

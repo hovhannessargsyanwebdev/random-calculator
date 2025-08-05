@@ -1,8 +1,8 @@
 <template>
 <div>
   <v-text-field
-    class="input-text"
-    label="Գրիր պատասխանը"          
+    class="input-text"        
+    label="Write the answer"          
     single-line 
     v-model="inputVal"
     type="number"

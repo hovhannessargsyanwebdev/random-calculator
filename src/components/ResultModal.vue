@@ -16,7 +16,8 @@
               block
               class="result-modal-btn py-7"
             >
-              Իմանալ <br> պատասխանը
+              <!-- Իմանալ <br> պատասխանը -->
+              Get the <br> answer
             </v-btn>
           </div>
 
@@ -28,7 +29,8 @@
               block
               class="result-modal-btn py-7"
             >
-              Փակել
+              <!-- Փակել -->
+              Close
               <v-icon dark
                 x-large
               >

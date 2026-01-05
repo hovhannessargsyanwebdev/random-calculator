@@ -1,7 +1,7 @@
 # 🧮 Math Trainer for Kids
 
 🔗 **Live Demo:**  
-https://hovhannessargsyanwebdev.github.io/the-artistry/
+https://hovhannessargsyanwebdev.github.io/random-calculator/
 
 A simple and fun **web application built with Vue.js** designed for children (and adults too!) to improve their **math skills** through interactive practice.
 
